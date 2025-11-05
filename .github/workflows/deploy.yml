@@ -1,0 +1,43 @@
+name: Deploy Cloud Storage
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Make scripts executable
+        run: |
+          chmod +x deploy_storage.sh
+          chmod +x cloudfiles.sh
+
+      - name: Run deployment
+        env:
+          RESOURCE_GROUP: capstone
+          LOCATION: eastus
+        run: |
+          ./deploy_storage.sh
+
+      - name: Upload artifacts (state + logs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-artifacts
+          path: |
+            .cloudfiles_state
+            deploy_log.txt
