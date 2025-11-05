@@ -2,12 +2,10 @@
 set -euo pipefail
 
 # -----------------------
-# Config (edit as needed)
+# Config
 # -----------------------
-# We assume your resource group already exists and is named 'capstone'
 RESOURCE_GROUP="${RESOURCE_GROUP:-capstone}"
-LOCATION="${LOCATION:-eastus}"     # change if you prefer another region
-# STORAGE_ACCOUNT must be globally unique: we generate a reasonably unique default
+LOCATION="${LOCATION:-eastus}"
 STORAGE_ACCOUNT="${STORAGE_ACCOUNT:-capstonefiles$(date +%s | tail -c 6)}"
 CONTAINER_NAME="${CONTAINER_NAME:-publicfiles}"
 SKU="${SKU:-Standard_LRS}"
@@ -25,7 +23,7 @@ if ! az group show -n "$RESOURCE_GROUP" &>/dev/null; then
   exit 1
 fi
 
-# Create storage account
+# Create storage account with public access allowed
 echo "$(timestamp) | Creating storage account: $STORAGE_ACCOUNT" | tee -a "$LOGFILE"
 az storage account create \
   --name "$STORAGE_ACCOUNT" \
@@ -33,27 +31,31 @@ az storage account create \
   --location "$LOCATION" \
   --sku "$SKU" \
   --kind "$KIND" \
-  --https-only true \
+  --https-only \
+  --allow-blob-public-access true \
   --output none
 
 echo "$(timestamp) | Retrieving storage account key" | tee -a "$LOGFILE"
-STORAGE_KEY=$(az storage account keys list --account-name "$STORAGE_ACCOUNT" --resource-group "$RESOURCE_GROUP" --query '[0].value' -o tsv)
+STORAGE_KEY=$(az storage account keys list \
+  --account-name "$STORAGE_ACCOUNT" \
+  --resource-group "$RESOURCE_GROUP" \
+  --query '[0].value' -o tsv)
 
 if [[ -z "$STORAGE_KEY" ]]; then
   echo "$(timestamp) | Failed to get storage key" | tee -a "$LOGFILE"
   exit 1
 fi
 
-# Create container with public access
-echo "$(timestamp) | Creating container: $CONTAINER_NAME (public access)" | tee -a "$LOGFILE"
+# Create container with blob-level public access
+echo "$(timestamp) | Creating container: $CONTAINER_NAME (public blob access)" | tee -a "$LOGFILE"
 az storage container create \
   --name "$CONTAINER_NAME" \
   --account-name "$STORAGE_ACCOUNT" \
   --account-key "$STORAGE_KEY" \
-  --public-access container \
+  --public-access blob \
   --output none
 
-# Save state for CLI
+# Save state for CLI reuse
 cat > .cloudfiles_state <<EOF
 STORAGE_ACCOUNT=$STORAGE_ACCOUNT
 CONTAINER_NAME=$CONTAINER_NAME

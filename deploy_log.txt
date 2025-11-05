@@ -1,0 +1,23 @@
+2025-11-05T11:57:03Z | Starting deployment
+2025-11-05T11:57:03Z | Using resource group: capstone
+2025-11-05T11:57:05Z | Creating storage account: capstonefiles43822
+2025-11-05T11:57:40Z | Retrieving storage account key
+2025-11-05T11:57:43Z | Creating container: publicfiles (public access)
+2025-11-05T11:57:46Z | Deployment finished. State saved to .cloudfiles_state
+Public container URL: https://capstonefiles43822.blob.core.windows.net/publicfiles/
+2025-11-05T13:29:57Z | Starting deployment
+2025-11-05T13:29:57Z | Using resource group: capstone
+2025-11-05T13:30:02Z | Creating storage account: capstonefiles49396
+2025-11-05T13:35:32Z | Starting deployment
+2025-11-05T13:35:32Z | Using resource group: capstone
+2025-11-05T13:35:36Z | Creating storage account: capstonefiles49732
+2025-11-05T13:37:47Z | Starting deployment
+2025-11-05T13:37:47Z | Using resource group: capstone
+2025-11-05T13:37:52Z | Creating storage account: capstonefiles49866
+2025-11-05T13:40:02Z | Starting deployment
+2025-11-05T13:40:02Z | Using resource group: capstone
+2025-11-05T13:40:07Z | Creating storage account: capstonefiles50002
+2025-11-05T13:40:42Z | Retrieving storage account key
+2025-11-05T13:40:49Z | Creating container: publicfiles (public blob access)
+2025-11-05T13:40:54Z | Deployment finished. State saved to .cloudfiles_state
+Public container URL: https://capstonefiles50002.blob.core.windows.net/publicfiles/
